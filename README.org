@@ -11,3 +11,13 @@ may not all the features are supported and hidden bugs are
 possible.
 
 Contribution and Issues are welcomed. 
+
+* Usage
+#+begin_src lisp
+  (ql:quickload :cl-bdf)
+
+  (defvar font (bdf:load-bdf-font "path/to/font.bdf"))
+
+  ;; Have fun and good luck...
+  (bdf:get-char font "A")                 ; => character A
+#+end_src

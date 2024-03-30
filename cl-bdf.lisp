@@ -129,7 +129,7 @@ Return splited words. "
         collect line into prop
         finally
            (let ((end (read-line* stream)))
-             (if (eq (read-str* (first end)) 'ENDPROPERTIES)
+             (if (string= (first end) "ENDPROPERTIES")
                  (setf-slots font
                    properties prop)
                  (error "ERROR WITH PROPERTIES SIZE.")))))
@@ -152,27 +152,27 @@ Return splited words. "
   "Parse char from `stream'.
 Return a `bdf-char' object. "
   (loop with char = (make-instance 'bdf-char)
-        for line = (print (read-line* stream))
+        for line = (read-line* stream)
         while line
-        do (case (read-str* (first line))
-             (STARTCHAR                 ; STARTCHAR string
+        do (string-case (first line)
+             ("STARTCHAR"               ; STARTCHAR string
               (setf-slots char char-name (second line)))
-             (ENCODING                  ; ENCODING integer (integer)
+             ("ENCODING"                ; ENCODING integer (integer)
               (let ((enc (read-str* (second line))))
                 (if (= enc -1)
                     (setf-slots char
                       standard-endcoded? nil
                       encoding           (read-str* (third line)))
                     (setf-slots char encoding enc))))
-             (SWIDTH                    ; SWIDTH swx0 swy0
+             ("SWIDTH"                  ; SWIDTH swx0 swy0
               (setf-slots char
                 swx (read-str* (second line))
                 swy (read-str* (third  line))))
-             (DWIDTH                    ; DWIDTH dwx0 dwy0
+             ("DWIDTH"                  ; DWIDTH dwx0 dwy0
               (setf-slots char
                 dwx (read-str* (second line))
                 dwy (read-str* (third  line))))
-             (BITMAP
+             ("BITMAP"
               (setf-slots char
                 bitmap (loop for row = (read-line stream)
                              while (not (string= row "ENDCHAR"))
@@ -192,35 +192,35 @@ Return a bdf object. "
   (loop with font = (make-instance 'bdf)
         for line = (read-line* stream)
         while line
-        do (case (read-str* (first line))
-             (STARTFONT                      ; STARTFONT number
+        do (string-case (first line)
+             ("STARTFONT"               ; STARTFONT number
               (setf-slots font
                 start-font (read-str* (second line))))
-             (CONTENTVERSION                 ; CONTENTVERSION integer
+             ("CONTENTVERSION"          ; CONTENTVERSION integer
               (setf-slots font
                 content-version (read-str* (second line))))
-             (FONT                           ; FONT string
+             ("FONT"                    ; FONT string
               (setf-slots font
                 font-name (second line)))
-             (SIZE                           ; SIZE PointSize Xres Yres
+             ("SIZE"                    ; SIZE PointSize Xres Yres
               (setf-slots font
                 point-size   (read-str* (second line))
                 x-resolution (read-str* (third  line))
                 y-resolution (read-str* (fourth line))))
-             (FONTBOUNDINGBOX                ; FONTBOUNDINGBOX FBBx FBBy Xoff Yoff
+             ("FONTBOUNDINGBOX"  ; FONTBOUNDINGBOX FBBx FBBy Xoff Yoff
               (setf-slots font
                 bounding-x (read-str* (second line))
                 bounding-y (read-str* (third  line))
                 x-offset   (read-str* (fourth line))
                 y-offset   (read-str* (fifth  line))))
-             (METRICSSET                     ; METRICSSET integer
+             ("METRICSSET"              ; METRICSSET integer
               (setf-slots font
                 metrics-set (read-str* (second line))))
-             (STARTPROPERTIES                ; STARTPROPERTIES n
+             ("STARTPROPERTIES"         ; STARTPROPERTIES n
               (parse-properties! font stream (read-str* (second line))))
-             (CHARS                          ; CHARS n
+             ("CHARS"                   ; CHARS n
               (parse-chars! font stream (read-str* (second line))))
-             (ENDFONT                        ; ENDFONT
+             ("ENDFONT"                 ; ENDFONT
               (return font)))))
 
 ;; ========== load-bdf-font ==========

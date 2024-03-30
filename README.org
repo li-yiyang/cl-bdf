@@ -1,0 +1,13 @@
+#+title: CL-BDF
+#+author: 凉凉
+* About
+I am trying to make plotting program, for which I need text
+drawing abiities. Since [[https://en.wikipedia.org/wiki/Glyph_Bitmap_Distribution_Format][BDF]] fonts are easy to parse ASCII
+files, so I choose to create a BDF parsing lib for common
+lisp.
+
+But please note that this project is still work in progress,
+may not all the features are supported and hidden bugs are
+possible.
+
+Contribution and Issues are welcomed. 

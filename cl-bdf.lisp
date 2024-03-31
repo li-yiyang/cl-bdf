@@ -11,6 +11,7 @@
    #:content-version                    ; content version
    #:font-name                          ; name of font
    #:get-char                           ; get bdf-char from specific font
+   #:font-bitmap
    )
   (:documentation
    "Use CL-BDF to parse BDF fonts.
@@ -101,7 +102,7 @@ Return `bdf-char' object. "))
    (bbh :initform 0)
    (bbx :initform 0)
    (bby :initform 0)
-   (bitmap :initarg :bitmap)))
+   (bitmap :initarg :bitmap :reader font-bitmap)))
 
 ;; ========== bdf parser ==========
 ;; The process of parsing `bdf' object from stream goes

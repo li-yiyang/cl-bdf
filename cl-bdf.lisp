@@ -100,7 +100,7 @@ Return `bdf-char' object. "))
    (bbw :initform 0)
    (bbh :initform 0)
    (bbx :initform 0)
-   (bbx :initform 0)
+   (bby :initform 0)
    (bitmap :initarg :bitmap)))
 
 ;; ========== bdf parser ==========

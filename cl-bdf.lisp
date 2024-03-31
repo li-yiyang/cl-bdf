@@ -97,6 +97,10 @@ Return `bdf-char' object. "))
    (swy :initform 0)
    (dwx :initform 0)
    (dwy :initform 0)
+   (bbw :initform 0)
+   (bbh :initform 0)
+   (bbx :initform 0)
+   (bbx :initform 0)
    (bitmap :initarg :bitmap)))
 
 ;; ========== bdf parser ==========
@@ -172,6 +176,12 @@ Return a `bdf-char' object. "
               (setf-slots char
                 dwx (read-str* (second line))
                 dwy (read-str* (third  line))))
+             ("BBX"                     ; BBX BBw BBh BBxoff0x BByoff0y
+              (setf-slots char
+                bbw (read-str* (second line))
+                bbh (read-str* (third  line))
+                bbx (read-str* (fourth line))
+                bby (read-str* (fifth  line))))
              ("BITMAP"
               (setf-slots char
                 bitmap (loop for row = (read-line stream)

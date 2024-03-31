@@ -12,6 +12,7 @@
    #:font-name                          ; name of font
    #:get-char                           ; get bdf-char from specific font
    #:font-bitmap
+   #:font-bounding-box
    )
   (:documentation
    "Use CL-BDF to parse BDF fonts.
@@ -104,6 +105,17 @@ Return `bdf-char' object. "))
    (bby :initform 0)
    (bitmap :initarg :bitmap :reader font-bitmap)))
 
+;; ========== bdf-char ==========
+
+(defgeneric font-bounding-box (char)
+  (:documentation
+   "Get the bounding box infomation for `char'.
+Return values `bbw', `bbh', `bbx', `bby'. "))
+
+(defmethod font-bounding-box ((char bdf-char))
+  (with-slots (bbw bbh bbx bby) char
+    (values bbw bbh bbx bby)))
+
 ;; ========== bdf parser ==========
 ;; The process of parsing `bdf' object from stream goes
 ;; like below:
@@ -143,15 +155,13 @@ Return splited words. "
 
 (defun hex-str->bit-list (str)
   "Trun hex-str `str' into bit list. "
-  (flet ((<- (char)
-           (let* ((code (char-code char))
-                  (val  (cond ((and (<= 48 code) (<= code 57))  (- code 48))
-                              ((and (<= 65 code) (<= code 70))  (- code 55))
-                              ((and (<= 97 code) (<= code 122)) (- code 87))
-                              (t (error "Error with input. "))))
-                  (bits ()))
-             (dotimes (i 4 bits) (push (mod (ash val (- i 4)) 2) bits)))))
-    (apply #'nconc (map 'list #'<- str))))
+  (flet ((hex-str->bits (hex)
+           (loop with int = (parse-integer hex :radix 16)
+                 for bit from 7 downto 0
+                 collect (if (logbitp bit int) 1 0))))
+    (apply #'nconc
+           (loop for i below (length str) by 2
+                 collect (hex-str->bits (subseq str i (+ i 2)))))))
 
 (defun parse-char (stream)
   "Parse char from `stream'.

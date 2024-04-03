@@ -7,6 +7,7 @@
    #:bdf-char                           ; bdf-char for each character
    
    #:font-size                          ; font size
+   #:font-scale
    #:bdf-version                        ; bdf version
    #:content-version                    ; content version
    #:font-name                          ; name of font
@@ -69,6 +70,21 @@ Return values of `bounding-x' and `bounding-y'. "))
 (defmethod font-size ((font bdf))
   (with-slots (bounding-x bounding-y) font
     (values bounding-x bounding-y)))
+
+(defmethod font-size ((char bdf-char))
+  (with-slots (dwx dwy) char
+    (values dwx dwy)))
+
+;; ========== bdf font-scale ==========
+
+(defgeneric font-scale (font font-size)
+  (:documentation
+   "Get the scale rate if `font' is displayed at `font-size'.
+The font-size is the height pixel of the char. "))
+
+(defmethod font-scale ((font bdf) font-size)
+  (with-slots (bounding-y) font
+    (float (/ font-size bounding-y))))
 
 ;; ========== bdf get-char ==========
 

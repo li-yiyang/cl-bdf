@@ -71,10 +71,6 @@ Return values of `bounding-x' and `bounding-y'. "))
   (with-slots (bounding-x bounding-y) font
     (values bounding-x bounding-y)))
 
-(defmethod font-size ((char bdf-char))
-  (with-slots (dwx dwy) char
-    (values dwx dwy)))
-
 ;; ========== bdf font-scale ==========
 
 (defgeneric font-scale (font font-size)
@@ -120,6 +116,12 @@ Return `bdf-char' object. "))
    (bbx :initform 0)
    (bby :initform 0)
    (bitmap :initarg :bitmap :reader font-bitmap)))
+
+;; ========== bdf-char font-size ==========
+
+(defmethod font-size ((char bdf-char))
+  (with-slots (dwx dwy) char
+    (values dwx dwy)))
 
 ;; ========== bdf-char ==========
 
